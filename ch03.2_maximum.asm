@@ -6,6 +6,9 @@
 ;    $ ./go.sh ch03.2_maximum
 ;    Exited with code: 222
 ;
+; Note: My version here differs from the book's. I don't preload
+;       the first value into eax and I check for the sentinel
+;       later in the loop. Savings: 1 instruction. :-)
 
 section .data
 
