@@ -13,8 +13,5 @@ shell script assembles, links, and runs them (leave off the extension):
     $ ./go.sh ch03.1_exit
     Exited with code: 0
 
-Status: I've just started this repo and need to catch up to where I am
-in the book.
-
 Personal note: I like this book a lot, but I do not endorse the author
 or his views outside of this one single subject.
