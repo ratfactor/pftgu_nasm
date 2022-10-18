@@ -1,12 +1,8 @@
-; Chapter 4 "Power Function"
+; Chapter 4 Factorial (recursive)
 ; 
-; Computes the value of 2^3 + 5^2, exits with value.
-; Demonstrates how functions work.
+; Computes the factorial
+; Demonstrates recursive functions and the stack.
 ;
-;    $ ./go.sh ch04.1_power_function
-;    Exited with code: 33
-;
-
 section .data
 
 section .text
