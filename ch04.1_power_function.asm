@@ -31,7 +31,7 @@ _start:
     add ebx, eax     ; add current answer to previous
 
     ; exit! ebx contains answer and is "returned" as exit code
-    mov eax, 1
+    mov eax, 1       ; linux syscall 'exit'
     int 0x80
 
 ; power function

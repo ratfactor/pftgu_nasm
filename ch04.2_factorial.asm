@@ -3,6 +3,9 @@
 ; Computes the factorial
 ; Demonstrates recursive functions and the stack.
 ;
+;     $ ./go.sh ch04.2_factorial
+;     Exited with code: 24
+;
 section .data
 
 section .text
@@ -11,63 +14,53 @@ section .text
 ; ---------------------------------------------------------
 global _start
 _start:
-    push dword 3     ; second arg, push immediate value onto stack
-    push dword 2     ; first arg, pushed last!
-    call power
+    push dword 4     ; push function arg on stack
 
-    add esp, 8       ; move stack pointer back to "erase" args
-    push eax         ; save current answer on stack
+    call factorial   ; call recursive function!
 
-    push dword 2     ; second arg
-    push dword 5     ; first arg
-    call power
+    ; Move the stack pointer BACKWARD (by adding) to remove
+    ; the parameter that was pushed onto the stack. 
+    add esp, 4
 
-    add esp, 8       ; move stack pointer back to "erase" args
-    pop ebx          ; put previous saved answer into ebx
-    add ebx, eax     ; add current answer to previous
+    ; Move the answer in eax to ebx to use as exit code.
+    mov ebx, eax
+    mov eax, 1       ; syscall 'exit'
+    int 0x80         ; linux interrupt
 
-    ; exit! ebx contains answer and is "returned" as exit code
-    mov eax, 1
-    int 0x80
-
-; power function
+; factorial function
 ; ---------------------------------------------------------
 ; input:
-;   arg1 -> ebx   is the base number
-;   arg2 -> ecx   is the exponent to raise base by
+;   arg1 -> eax   is the base number
 ; output:
 ;   answer in eax
 ;
-; Note: We're not testing this function externally yet,
-;       but I *think* I have properly translated this
-;       global function directive (elf specific?) to NASM:
-global power:function
-power:
-    ; We move the stack pointer FORWARD to make room for 4 bytes
-    ; of space for a "local variable" in traditional C function
-    ; style. We point the base pointer register, ebp, to the
-    ; the current stack position so we can use it to reference
-    ; relative parts of the stack for "private use" in our
-    ; function. Again, this is just a style or convention.
-    push ebp       ; save previous base pointer
+; Note: This function calls itself recursively!
+global factorial:function
+factorial:
+    push ebp       ; save base pointer
     mov ebp, esp   ; set it to stack pointer
-    sub esp, 4     ; move pointer FORWARD to make room
 
-    mov ebx, [ebp + 8]  ; first arg - base number
-    mov ecx, [ebp + 12] ; second arg - exponent
-    mov [ebp - 4], ebx  ; store base number as start of total
+    ; Get first param into eax
+    ;   ebp + 4 is the return address
+    ;   ebp + 8 is the first param
+    mov eax, [ebp + 8]
 
-power_loop_start:
-    cmp ecx, 1          ; once power is 1, we're done!
-    je end_power
-    mov eax, [ebp - 4]  ; put total in eax
-    imul eax, ebx       ; multiply total by base
-    mov [ebp - 4], eax  ; store total
-    dec ecx             ; reduce power by 1
-    jmp power_loop_start
+    ; If the param is 1, that's our base case, return it!
+    cmp eax, 1
+    je .end_factorial
 
-end_power:
-    mov eax, [ebp - 4]  ; put total in eax to return
-    mov esp, ebp        ; restore stack pointer
-    pop ebp             ; restore base pointer (we pushed it)
+    ; Keep going: decrement the value and recurse!
+    dec eax
+    push eax ; push param
+    call factorial
+
+    ; Recursion done, stack is now full of values to be
+    ; multiplied. Register eax contains the previous result.
+    mov ebx, [ebp + 8]
+    imul eax, ebx
+
+.end_factorial:
+    ; Restore stack stuff and return. Answer already in eax.
+    mov esp, ebp
+    pop ebp
     ret
