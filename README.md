@@ -1,5 +1,8 @@
 # NASM ports of exercises from Programming from the Ground Up
 
+**MOVED!** Hello, I am moving my repos to http://ratfactor.com/repos/
+and setting them to read-only ("archived") on GitHub. Thank you, _-Dave_
+
 The 2003 book _Programming from the Ground Up_ is an excellent primer
 for 32-bit (i386) architecture assembly (and fundamental programming in
 general). I've got a paper copy, but you can also read it for free
